@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Goal Getter Series</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #0f1115;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .brochure {
+    width: 95%;
+    max-width: 1200px;
+    height: 95vh;
+    background: #121521;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pages {
+    display: flex;
+    width: 500%;
+    height: 100%;
+    transition: transform 0.6s ease;
+  }
+
+  .page {
+    width: 100%;
+    padding: 32px;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+
+  .page h1 {
+    font-size: clamp(22px, 3vw, 28px);
+    margin-bottom: 12px;
+  }
+
+  .page h2 {
+    font-size: clamp(20px, 2.5vw, 24px);
+    margin-bottom: 12px;
+    color: #ffffff;
+  }
+
+  .page p {
+    font-size: clamp(14px, 1.6vw, 16px);
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+
+  .placeholder {
+    margin: 24px 0;
+    border-radius: 14px;
+    background: #1d2a6c;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    max-height: 400px;
+  }
+
+  .placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .feature {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .card {
+    background: #161821;
+    border-radius: 14px;
+    padding: 16px;
+    flex: 1 1 calc(33% - 16px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(241,90,41,0.4);
+  }
+
+  .card h3 {
+    margin-top: 0;
+    color: #ffffff;
+    font-size: 16px;
+  }
+
+  .card p {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  .nav {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+
+  button {
+    background: #F15A29;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(241,90,41,0.5);
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  @media(max-width: 1024px){
+    .card { flex: 1 1 45%; }
+  }
+
+  @media(max-width: 768px){
+    .card { flex: 1 1 48%; }
+  }
+
+  @media(max-width: 480px){
+    .card { flex: 1 1 100%; }
+    .page { padding: 20px; }
+  }
+
+  .private-cta {
+    position: absolute;
+    bottom: 80px;
+    right: 24px;
+    background: rgba(18,21,33,0.92);
+    border: 1px solid rgba(241,90,41,0.4);
+    border-radius: 16px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font-size: 13px;
+    backdrop-filter: blur(8px);
+  }
+
+  .private-cta span {
+    opacity: 0.75;
+    font-size: 12px;
+  }
+
+  .private-cta button {
+    background: transparent;
+    border: 1px solid #F15A29;
+    color: #F15A29;
+    padding: 6px 14px;
+    border-radius: 14px;
+    font-size: 12px;
+  }
+  
+  .exec-proof {
+    margin: 28px 0 10px;
+    padding: 22px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(241, 90, 41, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .proof-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-size: 11px;
+    opacity: 0.6;
+    margin-bottom: 6px;
+  }
+
+  .exec-proof h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .proof-text {
+    font-size: 14px;
+    opacity: 0.85;
+    max-width: 700px;
+  }
+
+  .proof-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .proof-stats div {
+    min-width: 140px;
+  }
+
+  .proof-stats strong {
+    display: block;
+    font-size: 16px;
+    color: #ffffff;
+  }
+
+  .proof-stats span {
+    font-size: 12px;
+    opacity: 0.65;
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="brochure">
+
+  <div class="pages" id="pages">
+
+    <!-- Page 1: Intro -->
+    <div class="page">
+      <h1>Welcome to the Goal Getter Series!</h1>
+      <p>Banking designed to help you, your family, and your savings goals thrive. Turn aspirations into achievements with our three unique pathways.</p>
+      <div class="placeholder">
+        <img src="https://i.imgur.com/7waAXlL.jpeg" alt="Goal Getter Intro">
+      </div>
+      <p>Flip the pages to explore Future Builder, Dream Achiever, and Everyday Saver.</p>
+
+      <div class="exec-proof">
+        <p class="proof-eyebrow">A Banking Experience Like No Other</p>
+        <h3>Helping you achieve life goals</h3>
+        <p class="proof-text">
+          The Goal Getter Series is more than just accounts — it’s a journey. From teaching kids financial literacy to helping adults save effortlessly, we provide tools, guidance, and rewards for every milestone.
+        </p>
+        <div class="proof-stats">
+          <div><strong>Three Pathways</strong><span>Kids, Life Goals, Habit Saving</span></div>
+          <div><strong>Automated Tools</strong><span>Effortless tracking & savings</span></div>
+          <div><strong>Rewards & Milestones</strong><span>Celebrate every achievement</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 2: Future Builder -->
+    <div class="page">
+      <h2>Future Builder (Kids & Teens)</h2>
+      <p>Start early and teach financial literacy. The Future Builder pathway uses XX Kids Save (SKS & SKS Teen) accounts to build habits that last a lifetime.</p>
+      <div class="placeholder">
+        <img src="https://i.imgur.com/Oo3qjTv.jpeg" alt="Future Builder">
+      </div>
+
+      <div class="exec-proof">
+        <p class="proof-eyebrow">Smart Savings Early</p>
+        <h3>Develop lifelong financial habits</h3>
+        <p class="proof-text">
+          Future Builder enables parents and guardians to save for their children while instilling financial discipline and rewarding milestones along the way.
+        </p>
+        <div class="proof-stats">
+          <div><strong>Age 0-12</strong><span>SKS Account</span></div>
+          <div><strong>Age 13-17</strong><span>SKS Teen</span></div>
+          <div><strong>Rewards</strong><span>Milestone-based bonuses</span></div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="card"><h3>Competitive Interest</h3><p>Grow savings with attractive rates.</p></div>
+        <div class="card"><h3>No Maintenance Fee</h3><p>Save without hidden costs.</p></div>
+        <div class="card"><h3>Financial Literacy</h3><p>Teach children smart money habits.</p></div>
+        <div class="card"><h3>Milestone Rewards</h3><p>Incentives for reaching savings goals.</p></div>
+      </div>
+    </div>
+
+    <!-- Page 3: Dream Achiever -->
+    <div class="page">
+      <h2>Dream Achiever (Life Goals)</h2>
+      <p>Save for weddings, holidays, cars, or higher education with GTTarget Account. Set goals, automate savings, and track progress effortlessly.</p>
+      <div class="placeholder">
+        <img src="https://i.imgur.com/VpG9tl8.jpeg" alt="Dream Achiever">
+      </div>
+
+      <div class="exec-proof">
+        <p class="proof-eyebrow">Your Dreams, Realized</p>
+        <h3>Turn aspirations into achievements</h3>
+        <p class="proof-text">
+          Dream Achiever helps you stay disciplined, with bonus interest for committed standing orders, goal-tracking dashboards, and celebratory notifications as milestones are hit.
+        </p>
+        <div class="proof-stats">
+          <div><strong>High Interest</strong><span>Grow your savings faster</span></div>
+          <div><strong>Automated Orders</strong><span>Set it & forget it</span></div>
+          <div><strong>Goal Tracking</strong><span>Visual dashboards & notifications</span></div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="card"><h3>Targeted Savings</h3><p>Dedicated account for each goal.</p></div>
+        <div class="card"><h3>Bonus Interest</h3><p>Earn extra when committed.</p></div>
+        <div class="card"><h3>Celebratory Alerts</h3><p>Stay motivated with notifications.</p></div>
+        <div class="card"><h3>Flexible Frequency</h3><p>Monthly, quarterly, or semi-annual deposits.</p></div>
+      </div>
+    </div>
+
+    <!-- Page 4: Everyday Saver -->
+    <div class="page">
+      <h2>Everyday Saver (Habit Building)</h2>
+      <p>Effortless, consistent savings with XXkishie Account. Automatically save a percentage of every spend and monitor your progress with daily or weekly summaries.</p>
+      <div class="placeholder">
+        <img src="https://i.imgur.com/YwJFz2F.jpeg" alt="Everyday Saver">
+      </div>
+
+      <div class="exec-proof">
+        <p class="proof-eyebrow">Save Without Thinking</p>
+        <h3>Turn spending into saving</h3>
+        <p class="proof-text">
+          Everyday Saver makes saving seamless. Auto-save a portion of each transaction, get insights through the mobile app, and develop a habit that compounds over time.
+        </p>
+        <div class="proof-stats">
+          <div><strong>Auto-Save</strong><span>Percentage of every spend</span></div>
+          <div><strong>Insights</strong><span>Daily & weekly summaries</span></div>
+          <div><strong>App Integration</strong><span>Real-time tracking & nudges</span></div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="card"><h3>Seamless Savings</h3><p>Money stacks up without effort.</p></div>
+        <div class="card"><h3>Progress Notifications</h3><p>Stay on top of your goals.</p></div>
+        <div class="card"><h3>App Dashboard</h3><p>Visualize your savings anytime.</p></div>
+        <div class="card"><h3>Flexible Percentages</h3><p>Save 1% to 5% per transaction.</p></div>
+      </div>
+    </div>
+
+    <!-- Page 5: Why Goal Getter / CTA -->
+    <div class="page">
+      <h2>Why Choose Goal Getter Series?</h2>
+      <p>We’re not just a bank — we’re your partner in achieving life goals, building habits, and teaching financial literacy to the next generation.</p>
+      <div class="placeholder">
+        <img src="https://i.imgur.com/qCQsJTr.jpeg" alt="Goal Getter CTA">
+      </div>
+
+      <div class="exec-proof">
+        <p class="proof-eyebrow">Your Financial Partner</p>
+        <h3>Smart, simple, goal-oriented banking</h3>
+        <p class="proof-text">
+          From Future Builder to Dream Achiever and Everyday Saver, the Goal Getter Series offers a complete pathway to reach personal and family financial goals — with rewards, guidance, and automation every step of the way.
+        </p>
+        <div class="proof-stats">
+          <div><strong>Multi-Age Paths</strong><span>Kids, teens, adults</span></div>
+          <div><strong>Automated Tools</strong><span>Spend-to-save & standing orders</span></div>
+          <div><strong>Rewards & Milestones</strong><span>Celebrate achievements</span></div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="card"><h3>Interactive Tools</h3><p>Track & visualize goals easily.</p></div>
+        <div class="card"><h3>Rewards System</h3><p>Incentives for consistency.</p></div>
+        <div class="card"><h3>Family-Friendly</h3><p>Engage kids & adults alike.</p></div>
+        <div class="card"><h3>Seamless Integration</h3><p>Works with your existing accounts.</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Private CTA -->
+  <div class="private-cta">
+    <div>
+      <strong>Goal Getter Guidance</strong><br>
+      <span>Access dedicated support to maximize your savings journey</span>
+    </div>
+    <button>Request Access</button>
+  </div>
+
+  <div class="nav">
+    <button onclick="prevPage()">← Back</button>
+    <button onclick="nextPage()">Next →</button>
+  </div>
+
+</div>
+
+<script>
+let currentPage = 0;
+const pages = document.getElementById("pages");
+const totalPages = 5;
+
+function updatePage() {
+  pages.style.transform = `translateX(-${currentPage * 100}%)`;
+}
+
+function nextPage() {
+  if (currentPage < totalPages - 1) {
+    currentPage++;
+    updatePage();
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    updatePage();
+  }
+}
+</script>
+
+</body>
+</html>
